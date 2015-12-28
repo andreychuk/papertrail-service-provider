@@ -2,8 +2,6 @@
 namespace Silex\Tests\Provider;
 use Silex\Application;
 use Silex\Provider\PapertrailServiceProvider;
-use Silex\Provider\SerializerServiceProvider;
-
 /**
  * Class FanoutServiceProviderTest
  *
@@ -21,9 +19,9 @@ class FanoutServiceProviderTest extends \PHPUnit_Framework_TestCase
         $prefix = '-';
         $app = new Application();
         $app->register(new PapertrailServiceProvider(), array(
-            "papertrail.host" => $host,
-            "papertrail.port" => $port,
-            "papertrail.prefix" => $prefix
+            "host" => $host,
+            "port" => $port,
+            "prefix" => $prefix
         ));
         $tp = $app['papertrailHandler'];
 

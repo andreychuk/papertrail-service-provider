@@ -7,38 +7,46 @@ use Monolog\Handler\SyslogUdpHandler;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
+/**
+ * Class PapertrailServiceProvider
+ *
+ * @package Silex\Provider
+ */
 class PapertrailServiceProvider implements ServiceProviderInterface
 {
+    /**
+     * @param Application $app
+     */
     public function register(Application $app)
     {
         $app['papertrailHandler'] = $app->share(
             function () use ($app) {
 
-                if (!isset($app['papertrail.host'])) {
-                    throw new \Exception("papertrail.host undefined");
+                if (!isset($app['host'])) {
+                    throw new \Exception("Host undefined");
                 }
 
-                if (!isset($app['papertrail.port'])) {
-                    throw new \Exception("papertrail.port undefined");
+                if (!isset($app['port'])) {
+                    throw new \Exception("Port undefined");
                 }
 
-                if (!isset($app['papertrail.prefix'])) {
-                    $app['papertrail.prefix'] = '';
+                if (!isset($app['prefix'])) {
+                    $app['prefix'] = '';
                 } else {
-                    $app['papertrail.prefix'] = sprintf(
-                        '[%s]', $app['papertrail.prefix']
+                    $app['prefix'] = sprintf(
+                        '[%s]', $app['prefix']
                     );
                 }
 
-                // Set the format
-                $output = $app['papertrail.prefix']
+                // Set the format of message
+                $output = $app['prefix']
                     . "%channel%.%level_name%: %message%";
                 $formatter = new LineFormatter($output);
 
-                // Setup the logger
+                // Setup the logger handler
                 $papertrailHandler = new SyslogUdpHandler(
-                    sprintf("%s.papertrailapp.com", $app['papertrail.host']),
-                    $app['papertrail.port']
+                    sprintf("%s.papertrailapp.com", $app['host']),
+                    $app['port']
                 );
 
                 $papertrailHandler->setFormatter($formatter);
